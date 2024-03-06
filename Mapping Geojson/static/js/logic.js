@@ -63,7 +63,7 @@ function createMap(earthquakes) {
         zoom: 2.5,
         layers: [base, earthquakes]
     });
-
+    //ADDING LABEL 
     let legend = L.control({position: "bottomright"});
     legend.onAdd = function() {
         let div = L.DomUtil.create("div", "info legend"),
