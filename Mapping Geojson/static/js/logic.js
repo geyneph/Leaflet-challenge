@@ -9,11 +9,11 @@ d3.json(query).then(function (data) {
 
 // Determining the markers 
 function Color(depth) {
-    if (depth < 10) return "green";
-    else if (depth < 30) return "greenyellow";
-    else if (depth < 50) return "yellow";
-    else if (depth < 70) return "orange";
-    else if (depth < 90) return "orangered";
+    if (depth < 0.5) return "green";
+    else if (depth < 1) return "greenyellow";
+    else if (depth < 1.5) return "yellow";
+    else if (depth < 2.5) return "orange";
+    else if (depth < 3.5) return "orangered";
     else return "red";
   }
 
@@ -39,9 +39,9 @@ function createFeatures(Data) {
          {
             let geojsonMarker = {
                 radius: Size(feature.properties.mag),
-                fillColor: Color(feature.geometry.coordinates[2]),
+                fillColor: Color(feature.properties.mag),
                 color: "black",
-                weight: 0.5,
+                weight: 0.7,
                 
             };
         
@@ -52,8 +52,7 @@ function createFeatures(Data) {
 }
 
 function createMap(earthquakes) {
-
-    //layer.
+    //layer
     let base = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
@@ -64,4 +63,18 @@ function createMap(earthquakes) {
         zoom: 2.5,
         layers: [base, earthquakes]
     });
+
+    let legend = L.control({position: "bottomright"});
+    legend.onAdd = function() {
+        let div = L.DomUtil.create("div", "info legend"),
+            mag = [0.5, 1, 1.5, 2.5, 3.5, 5],
+            labels = [];
+
+        for (var i = 0; i <mag.length; i++) {
+            div.innerHTML +=
+            '<i style="background:' + Color(mag[i]) + '"></i> ' + mag[i] + (mag[i + 1] ? '&ndash;' + mag[i + 1] + '<br>' : '+');
+        }
+        return div;
+    };
+    legend.addTo(myMap);
 }
